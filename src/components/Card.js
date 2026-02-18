@@ -7,12 +7,14 @@ const Card = ({ data }) => {
 
       {data.map((curItem, index) => {
 
-        if (!curItem.urlToImage) return null;
+        const image = curItem.image || curItem.urlToImage;
+
+        if (!image) return null;
 
         return (
           <div className="card" key={index}>
 
-            <img src={curItem.urlToImage} alt="news"/>
+            <img src={image} alt="news"/>
 
             <div className="content">
 
