@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Card from "./Card";
 
 const Newsapp = () => {
@@ -8,21 +8,27 @@ const Newsapp = () => {
 
   const API_KEY = "9c3ed8ee95884dec979460a60f96675b";
 
-  const getData = async () => {
-    try {
+  // ✅ useCallback added (IMPORTANT)
+  const getData = useCallback(async () => {
+
+    try{
       const response = await fetch(
         `https://newsapi.org/v2/everything?q=${search}&apiKey=${API_KEY}`
       );
+
       const jsonData = await response.json();
       setNewsData(jsonData.articles?.slice(0,10) || []);
-    } catch (err) {
+
+    }catch(err){
       console.log(err);
     }
-  };
 
+  }, [search]);
+
+  // ✅ now dependency correct
   useEffect(() => {
     getData();
-  }, [search]);
+  }, [getData]);
 
   const handleInput = (e) => {
     setSearch(e.target.value);
@@ -38,7 +44,7 @@ const Newsapp = () => {
       <nav style={{display:"flex",justifyContent:"space-between",padding:"15px"}}>
         <h1>Trendy News</h1>
 
-        {/* buttons instead of anchor (Netlify safe) */}
+        {/* buttons instead anchor */}
         <div style={{display:"flex",gap:"10px"}}>
           <button>All News</button>
           <button>Trending</button>
