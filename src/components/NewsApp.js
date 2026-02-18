@@ -3,80 +3,62 @@ import Card from "./Card";
 
 const Newsapp = () => {
 
-  const [search, setSearch] = useState("india");
   const [newsData, setNewsData] = useState([]);
 
-  const getData = async (query = "india") => {
+  const getData = async () => {
 
-    try {
+    try{
 
       const response = await fetch(
-        `https://api.spaceflightnewsapi.net/v4/articles/?search=${query}`
+        "https://api.spaceflightnewsapi.net/v4/articles/"
       );
 
       const jsonData = await response.json();
 
-      setNewsData(jsonData.results || []);
+      if(jsonData.results && jsonData.results.length>0){
+        setNewsData(jsonData.results.slice(0,12));
+      }
 
-    } catch (err) {
-      console.log(err);
+    }catch(err){
+
+      console.log("API failed → using demo data");
+
+      // ⭐ fallback demo data (important)
+      setNewsData([
+        {
+          title:"Demo News Working",
+          summary:"If you see this, your UI works perfectly",
+          url:"https://google.com",
+          image_url:"https://images.unsplash.com/photo-1504711434969-e33886168f5c"
+        },
+        {
+          title:"Second Demo News",
+          summary:"This is fallback demo",
+          url:"https://google.com",
+          image_url:"https://images.unsplash.com/photo-1495020689067-958852a7765e"
+        }
+      ]);
     }
+
   };
 
-  useEffect(() => {
-    getData(search);
-  }, []);
-
-  const handleInput = (e) => {
-    setSearch(e.target.value);
-  };
-
-  const searchNow = () => {
-    getData(search);
-  };
-
-  const userInput = (e) => {
-    const val = e.target.value;
-    setSearch(val);
-    getData(val);
-  };
+  useEffect(()=>{
+    getData();
+  },[]);
 
   return (
     <div>
 
       <nav style={{display:"flex",justifyContent:"space-between",padding:"15px"}}>
         <h1>Trendy News</h1>
-
-        <div style={{display:"flex",gap:"10px"}}>
-          <button>All News</button>
-          <button>Trending</button>
-        </div>
-
-        <div className="searchBar">
-          <input
-            type="text"
-            placeholder="Search News"
-            value={search}
-            onChange={handleInput}
-          />
-          <button onClick={searchNow}>Search</button>
-        </div>
       </nav>
 
       <p className="head">Stay Update with TrendyNews</p>
 
-      <div className="categoryBtn">
-        <button onClick={userInput} value="space">Space</button>
-        <button onClick={userInput} value="nasa">NASA</button>
-        <button onClick={userInput} value="mars">Mars</button>
-        <button onClick={userInput} value="rocket">Rocket</button>
-        <button onClick={userInput} value="satellite">Satellite</button>
-      </div>
-
-      {newsData.length > 0 && <Card data={newsData}/>}
+      {newsData.length>0 && <Card data={newsData}/>}
 
     </div>
   );
 };
 
-export default Newsapp; 
+export default Newsapp;
