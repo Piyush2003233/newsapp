@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "./Card";
 
 const Newsapp = () => {
@@ -6,29 +6,26 @@ const Newsapp = () => {
   const [search, setSearch] = useState("india");
   const [newsData, setNewsData] = useState([]);
 
-  const API_KEY = "9c3ed8ee95884dec979460a60f96675b";
+  // ✅ NEW API (GNews working on Netlify)
+  const getData = async () => {
+    try {
 
-  // ✅ useCallback added (IMPORTANT)
-  const getData = useCallback(async () => {
-
-    try{
       const response = await fetch(
-        `https://newsapi.org/v2/everything?q=${search}&apiKey=${API_KEY}`
+        `https://gnews.io/api/v4/search?q=${search}&lang=en&token=9c8e3c3d3e7a4e2b9f2c6d5f`
       );
 
       const jsonData = await response.json();
+
       setNewsData(jsonData.articles?.slice(0,10) || []);
 
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
+  };
 
-  }, [search]);
-
-  // ✅ now dependency correct
   useEffect(() => {
     getData();
-  }, [getData]);
+  }, [search]);
 
   const handleInput = (e) => {
     setSearch(e.target.value);
@@ -44,7 +41,6 @@ const Newsapp = () => {
       <nav style={{display:"flex",justifyContent:"space-between",padding:"15px"}}>
         <h1>Trendy News</h1>
 
-        {/* buttons instead anchor */}
         <div style={{display:"flex",gap:"10px"}}>
           <button>All News</button>
           <button>Trending</button>
