@@ -7,14 +7,12 @@ const Card = ({ data }) => {
 
       {data.map((curItem, index) => {
 
-        const image = curItem.image || curItem.urlToImage;
-
-        if (!image) return null;
+        if (!curItem.image_url) return null;
 
         return (
           <div className="card" key={index}>
 
-            <img src={image} alt="news"/>
+            <img src={curItem.image_url} alt="news"/>
 
             <div className="content">
 
@@ -27,7 +25,7 @@ const Card = ({ data }) => {
                 {curItem.title}
               </a>
 
-              <p>{curItem.description}</p>
+              <p>{curItem.summary}</p>
 
               <button onClick={() => window.open(curItem.url,"_blank")}>
                 Read More
